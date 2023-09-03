@@ -17,7 +17,7 @@ Kittygram — социальная сеть для обмена фотограф
 **gunicorn==20.1.**0
 
 ## Установка
-1. Склоинровать репозиторий
+1. Склонировать репозиторий
 ```
 git clone git@github.com:DPavlen/infra_sprint1.git
 ```
@@ -39,10 +39,11 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
-6. В файле infra_sprint1/backend/kittygram_backend/settings.py в переменную ALLOWED_HOSTS добавить локальные адреса,
- а также доменное имя или внешний IP (если есть)
+6. В файле infra_sprint1/backend/kittygram_backend/settings.py не хранить публично SECRET_KEY и ALLOWED_HOSTS.
 ```
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', 'xxx.xxx.xxx.xxx']
+Для проекта Kittygram секреты подключаются из файла .env. 
+В файле есть как минимум одна константа — SECRET_KEY. Она не должна храниться в коде проекта.
+ALLOWED_HOSTS также вынесем в файл .env
 ```
 7. В этом же файле поменять значение переменной DEBUG с True на False
 ```
@@ -74,8 +75,8 @@ pip install gunicorn==20.1.0
 ```
 gunicorn --bind 0.0.0.0:8080 backend.wsgi
 ```
-3. Создайте файл конфигурации юнита systemd для Gunicorn в директории
-/etc/systemd/system/. Назовите его по шаблону gunicorn_название_проекта.service:
+3. В директории /etc/systemd/system/ создайте новый файл по аналогии с gunicorn.service.
+ Назовите его по шаблону gunicorn_название_проекта.service
 ```
 sudo nano /etc/systemd/system/gunicorn_название_проекта.service
 ```
@@ -130,9 +131,11 @@ sudo apt install nginx -y
 2. Запустите Nginx командой:
 sudo systemctl start nginx
 
-3. Обновите настройки Nginx. Для этого откройте файл конфигурации веб-сервера…
+3. В Nginx необходимо добавить настройки для приложения kittygram.
+Для этого откройте файл конфигурации веб-сервера с помощью команды
+```
 sudo nano /etc/nginx/sites-enabled/default
-
+```
 server {
  listen 80;
  server_name ваш_домен;
@@ -220,3 +223,6 @@ blank to select all options shown (Enter 'c' to cancel):
 /etc/nginx/sites-enbled/default добавятся новые настройки и будут прописаны пути к сертификату.
 
 5. Проверьте конфигурацию Nginx, и если всё в порядке, перезагрузите её. 
+
+## Автор проекта:
+- [Dmitry Pavlenko](https://github.com/DPavlen)
