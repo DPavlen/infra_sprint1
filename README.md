@@ -39,11 +39,11 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
-6. В файле infra_sprint1/backend/kittygram_backend/settings.py не хранить публично SECRET_KEY и ALLOWED_HOSTS.
+6. В файле infra_sprint1/backend/kittygram_backend/settings.py необходимо произвести настройки.
 ```
-Для проекта Kittygram секреты подключаются из файла .env. 
-В файле есть как минимум одна константа — SECRET_KEY. Она не должна храниться в коде проекта.
-ALLOWED_HOSTS также вынесем в файл .env
+Добавьте в список ALLOWED_HOSTS внешний IP сервера , 127.0.0.1, localhost и домен:
+Вместо xxx.xxx.xxx.xxx укажите IP сервера, а вместо <ваш_домен> – доменное имя.
+ALLOWED_HOSTS = ['xxx.xxx.xxx.xxx', '127.0.0.1', 'localhost', 'ваш_домен']
 ```
 7. В этом же файле поменять значение переменной DEBUG с True на False
 ```
@@ -75,8 +75,7 @@ pip install gunicorn==20.1.0
 ```
 gunicorn --bind 0.0.0.0:8080 backend.wsgi
 ```
-3. В директории /etc/systemd/system/ создайте новый файл по аналогии с gunicorn.service.
- Назовите его по шаблону gunicorn_название_проекта.service
+3. Необходимо открыть файл конфигурации и заменить его содержимое следующим кодом:
 ```
 sudo nano /etc/systemd/system/gunicorn_название_проекта.service
 ```
@@ -131,8 +130,7 @@ sudo apt install nginx -y
 2. Запустите Nginx командой:
 sudo systemctl start nginx
 
-3. В Nginx необходимо добавить настройки для приложения kittygram.
-Для этого откройте файл конфигурации веб-сервера с помощью команды
+3.Обновите настройки Nginx. Для этого откройте файл конфигурации веб-сервера
 ```
 sudo nano /etc/nginx/sites-enabled/default
 ```
