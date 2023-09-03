@@ -4,6 +4,7 @@ Kittygram — социальная сеть для обмена фотограф
 
 
 ##Технологии
+**Nginx/1.18.0**
 **Django==3.2.3**
 **djangorestframework==3.12.4**
 **djoser==2.1.0**
@@ -38,7 +39,7 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
-6. В файле /infra_sprint1/backend  необходимо произвести дополнительные настройки.
+6. В разделе /infra_sprint1/backend  необходимо создать дополнительный файл настройки.
 ```
 Создайте файл **.env** в папке **backend** (в папке с `manage.py`), затем добавьте строки, содержащиеся в файле **.env.example** и добавьте свои значения.
 ```
