@@ -1,7 +1,6 @@
-## Kittygram
+# Kittygram
 Kittygram — социальная сеть для обмена фотографиями любимых питомцев.
  Это полностью рабочий проект, который состоит из бэкенд-приложения на Django и фронтенд-приложения на React.
-
 
 ##Технологии:
 ***
@@ -27,6 +26,13 @@ Kittygram — социальная сеть для обмена фотограф
 
 **gunicorn==20.1.0**
 ***
+***
+## Функционал проекта:
+- Позволяет добавлять фотографии своих котиков и просматривать добавленные фото котиков других пользователей;
+- При загрузке котиков необходимо заполнить обязательные поля и по желанию поле "Достижения";
+- Добавлять и просматривать фотографии могут только зарегистрированные и авторизованные пользователи.
+
+***
 ## Установка
 1. Склонировать репозиторий
 ```
@@ -51,9 +57,9 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 6. В разделе /infra_sprint1/backend  необходимо создать дополнительный файл настройки.
-```
+
 Создайте файл **.env** в папке **backend** (в папке с `manage.py`), затем добавьте строки, содержащиеся в файле **.env.example** и добавьте свои значения.
-```
+
 7. В этом же файле поменять значение переменной DEBUG с True на False
 ```
 DEBUG = False
@@ -87,57 +93,54 @@ gunicorn --bind 0.0.0.0:8080 backend.wsgi
 3. Необходимо использовать порт 8080, так порт 8000 уже занят.
 Пример кода можно посмотреть в корне проекта в папке /infra/ .
 ```
-sudo nano /etc/systemd/system/gunicorn_название_проекта.service
+sudo nano /etc/systemd/system/gunicorn_kittygram.service
 ```
 4. Подставьте в код из листинга свои данные, добавьте этот код без комментариев в файл
 конфигурации Gunicorn и сохраните изменения:
+##### Внимание, вы должны изменить USER_NAME на свое имя пользователя в файле!
+
+**Примечание.** Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
+и ознакомиться с ним.
 ```
 [Unit]
 Description=gunicorn daemon
 After=network.target
-```
-```
+
 [Service]
-User=yc-user
-WorkingDirectory=/home/yc-user/infra_sprint1/backend/
-ExecStart=/home/yc-user/infra_sprint1/backend/venv/bin/gunicorn --bind 0.0.0.0:8080 kittygram_backend.wsgi
-```
-```
+User=USER_NAME
+WorkingDirectory=/home/USER_NAME/infra_sprint1/backend/
+ExecStart=/home/USER_NAME/infra_sprint1/backend/venv/bin/gunicorn --bind 0.0.0.0:8080 kittygram_backend.wsgi
+
 [Install]
 WantedBy=multi-user.target
 ```
-```
 Путь к директории проекта.
 WorkingDirectory=/home/имя_пользователя/папка_с_проектом/папка_с_файлом_manage.py/
-```
-```
-Команду, которую вы запускали руками, теперь будет запускать systemd.
-Чтобы узнать путь до Gunicorn, воспользуйтесь командой which gunicorn.
-ExecStart=/.../venv/bin/gunicorn --bind 0.0.0.0:8000 backend.wsgi:application
-```
-```
+
+Запустите процесс gunicorn_kittygram.service:
+sudo systemctl start gunicorn_kittygram
+
 Команда sudo systemctl с параметрами start, stop или restart запустит, остановит
-или перезапустит Gunicorn. Например, вот команда запуска:
-sudo systemctl start gunicorn_название_проекта
-```
-```
+или перезапустит Gunicorn. 
+
 Чтобы systemd следил за работой демона Gunicorn, запускал его при старте системы
 и при необходимости перезапускал, используйте команду:
-sudo systemctl enable gunicorn_название_проекта
 ```
-**Примечание.** Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
-и ознакомиться с ним.
-
+sudo systemctl enable gunicorn_kittygram
+```
 ## Установка и настройка веб- и прокси-сервера Nginx
 1. Если Nginx ещё не установлен на удалённый сервер, установите его:
+```
 sudo apt install nginx -y
-
+```
 2. Запустите Nginx командой:
+```
 sudo systemctl start nginx
-
+```
 3.Очистите содержимое файла конфигурации Ngnix и добавьте новые настройки:
 ```
 sudo nano /etc/nginx/sites-enabled/default
+```
 ```
 server {
     server_name YOUR_IP & YOUR_DOMAIN;
@@ -162,13 +165,15 @@ server {
         try_files $uri /index.html;
     }
 }
-
+```
 Сохраните изменения в файле, закройте его и проверьте на корректность:
+```
 sudo nano /etc/nginx/sites-enabled/default
-
+```
 Перезагрузите конфигурацию Nginx:
+```
 sudo systemctl reload nginx
-
+```
 **Примечание.** Далее Введите в адресную строку браузера IP-адрес вашего удалённого сервера без указания порта.
 Должна открыться страница приветствия от Nginx. Это подтверждает, что программа работает и отвечает.
 
@@ -179,41 +184,47 @@ sudo systemctl reload nginx
 Настройка файрвола ufw
 Получение и настройка SSL-сертификата
 1. Активируйте разрешение принимать запросы только на порты 80, 443 и 22:
- 80, 443: с ними будут работать пользователи, делая запросы к приложению.
+80, 443: с ними будут работать пользователи, делая запросы к приложению.
+```
 sudo ufw allow 'Nginx Full'
- 22: нужен, чтобы вы могли подключаться к серверу по SSH.
+```
+22: нужен, чтобы вы могли подключаться к серверу по SSH.
+```
 sudo ufw allow OpenSSH
-
+```
 2. Включите файрвол:
+```
 sudo ufw enable
+```
 В терминале выведется запрос на подтверждение операции. Введите y и нажмите Enter.
 
 3. Проверьте работу файрвола:
+```
 sudo ufw status
-
+```
 
 ## Получение и настройка SSL-сертификата
 
 1. Находясь на сервере, установите certbot, если он ещё не установлен:
-```
 Установка пакетного менеджера snap.
+```
 sudo apt install snapd
 ```
-```Установка и обновление зависимостей для пакетного менеджера snap.
+Установка и обновление зависимостей для пакетного менеджера snap.
+```
 sudo snap install core; sudo snap refresh core
 ```
-```
 Установка пакета certbot.
+```
 sudo snap install --classic certbot
 ```
-```
 Обеспечение доступа к пакету для пользователя с правами администратора.
+```
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
 2. Запустите certbot и получите SSL-сертификат. Для этого выполните команду:
 ```
 sudo certbot --nginx
-```
 ```
 Далее система попросит вас указать электронную почту и ответить на несколько вопросов. Сделайте это.
 Следующим шагом укажите имена, для которых вы хотели бы активировать HTTPS:
@@ -225,7 +236,7 @@ in a VirtualHost/server block.
 2: <доменное_имя_вашего_проекта_2>
 3: <доменное_имя_вашего_проекта_3>
 ...
-```
+
 Select the appropriate numbers separated by commas and/or spaces, or leave input
 blank to select all options shown (Enter 'c' to cancel):
 
@@ -235,7 +246,11 @@ blank to select all options shown (Enter 'c' to cancel):
 сертификат, который автоматически сохранится на вашем сервере в системной директории /etc/ssl/. Также будет автоматически изменена конфигурация Nginx: в файл
 /etc/nginx/sites-enbled/default добавятся новые настройки и будут прописаны пути к сертификату.
 
-5. Проверьте конфигурацию Nginx, и если всё в порядке, перезагрузите её. 
+5. Сохраните изменения, проверьте и перезагрузите конфигурацию веб-сервера Nginx:
+```
+sudo nginx -t
+sudo systemctl reload nginx 
+``` 
 
 ## Автор проекта:
 - [Dmitry Pavlenko](https://github.com/DPavlen)
