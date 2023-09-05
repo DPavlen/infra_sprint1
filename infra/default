@@ -1,5 +1,6 @@
 server {
     server_name pavlenchik.hopto.org;
+ 
     location /api/ {
         proxy_pass http://127.0.0.1:8000;
     }
@@ -13,12 +14,14 @@ server {
         index  index.html index.htm;
         try_files $uri /index.html;
     }
+ 
     listen 443 ssl;
     ssl_certificate /etc/letsencrypt/live/pavlenchik.hopto.org/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/pavlenchik.hopto.org/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
+
 server {
     if ($host = pavlenchik.hopto.org) {
         return 301 https://$host$request_uri;
@@ -51,12 +54,14 @@ server {
         index  index.html index.htm;
         try_files $uri /index.html;
     }
+
     listen 443 ssl; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/pavlenkittygram.hopto.org/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/pavlenkittygram.hopto.org/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
+
 server {
     if ($host = pavlenkittygram.hopto.org) {
         return 301 https://$host$request_uri;
