@@ -93,34 +93,27 @@ sudo nano /etc/systemd/system/gunicorn_название_проекта.service
 конфигурации Gunicorn и сохраните изменения:
 ```
 [Unit]
-```Это текстовое описание юнита, пояснение для разработчика.
 Description=gunicorn daemon
-```
-```
-Условие: при старте операционной системы запускать процесс только после того,
- как операционная система загрузится и настроит подключение к сети.
 After=network.target
 ```
 ```
 [Service]
-От чьего имени будет происходить запуск.
-User=имя_пользователя_в_системе
+User=yc-user
+WorkingDirectory=/home/yc-user/infra_sprint1/backend/
+ExecStart=/home/yc-user/infra_sprint1/backend/venv/bin/gunicorn --bind 0.0.0.0:8080 kittygram_backend.wsgi
+```
+```
+[Install]
+WantedBy=multi-user.target
 ```
 ```
 Путь к директории проекта.
 WorkingDirectory=/home/имя_пользователя/папка_с_проектом/папка_с_файлом_manage.py/
 ```
 ```
- Команду, которую вы запускали руками, теперь будет запускать systemd.
+Команду, которую вы запускали руками, теперь будет запускать systemd.
 Чтобы узнать путь до Gunicorn, воспользуйтесь командой which gunicorn.
 ExecStart=/.../venv/bin/gunicorn --bind 0.0.0.0:8000 backend.wsgi:application
-```
-```
-[Install]
-В этом параметре указывается вариант запуска процесса.
-Значение <multi-user.target> указывает, чтобы systemd запустил процесс
-доступный всем пользователям и без графического интерфейса.
-WantedBy=multi-user.target
 ```
 ```
 Команда sudo systemctl с параметрами start, stop или restart запустит, остановит
@@ -147,20 +140,27 @@ sudo systemctl start nginx
 sudo nano /etc/nginx/sites-enabled/default
 ```
 server {
- listen 80;
- server_name ваш_домен;
- location /api/ {
- proxy_pass http://127.0.0.1:8000;
- }
+    server_name YOUR_IP & YOUR_DOMAIN;
 
- location /admin/ {
- proxy_pass http://127.0.0.1:8000;
- }
- location / {
- root /var/www/имя_проекта;
- index index.html index.htm;
- try_files $uri /index.html;
- }
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+        client_max_body_size 20M;
+    }
+
+    location /admin/ {
+        proxy_pass http://127.0.0.1:8000;
+        client_max_body_size 20M;
+    }
+
+    location /media/ {
+        root /var/www/kittygram;
+    }
+
+    location / {
+        root   /var/www/kittygram;
+        index  index.html index.htm;
+        try_files $uri /index.html;
+    }
 }
 
 Сохраните изменения в файле, закройте его и проверьте на корректность:
