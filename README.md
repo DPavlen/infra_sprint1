@@ -86,25 +86,17 @@ sudo cp -r путь_к_директории_с_фронтенд-приложен
 ```
 pip install gunicorn==20.1.0
 ```
-2. Перейдите в директорию с файлом manage.py, и запустите Gunicorn:
-```
-gunicorn --bind 0.0.0.0:8080 backend.wsgi
-```
-3. Необходимо использовать порт 8080, так порт 8000 уже занят.
-Пример кода можно посмотреть в корне проекта в папке /infra/ .
+2. Создайте юнит Gunicorn:
+
 ```
 sudo nano /etc/systemd/system/gunicorn_kittygram.service
 ```
-4. Необходимо скопировать содержимое файла sudo nano /etc/systemd/system/gunicorn.service
-в файл sudo nano /etc/systemd/system/gunicorn_kittygram.service с помощью команды cp,
-нужно выполнить следующую команду в командной строке:
+3. Создайте юнит для Gunicorn:
 ```
-sudo cp /etc/systemd/system/gunicorn.service /etc/systemd/system/gunicorn_kittygram.service
+sudo nano /etc/systemd/system/gunicorn_kittygram.service
 ```
+4. В файле **gunicorn-kittygram.service** опишите конфигурацию процесса:
 ##### Внимание, вы должны изменить USER_NAME на свое имя пользователя в файле!
-
-**Примечание.** Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
-и ознакомиться с ним.
 ```
 [Unit]
 Description=gunicorn daemon
@@ -118,12 +110,13 @@ ExecStart=/home/USER_NAME/infra_sprint1/backend/venv/bin/gunicorn --bind 0.0.0.0
 [Install]
 WantedBy=multi-user.target
 ```
-Путь к директории проекта.
-WorkingDirectory=/home/имя_пользователя/папка_с_проектом/папка_с_файлом_manage.py/
+**Примечание.** Порт 8000 на моем сервере был занят, поэтому в моей конфигурации используется порт 8080.
+Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
 
 Запустите процесс gunicorn_kittygram.service:
+```
 sudo systemctl start gunicorn_kittygram
-
+```
 Команда sudo systemctl с параметрами start, stop или restart запустит, остановит
 или перезапустит Gunicorn. 
 
@@ -141,11 +134,11 @@ sudo apt install nginx -y
 ```
 sudo systemctl start nginx
 ```
-3.В существующем файле "default" конфигурации Ngnix добавьте новые настройки
-для приложения kittygram:
+3. Настройте конфигурацию для обработки статики фронтенда:   
 ```
 sudo nano /etc/nginx/sites-enabled/default
-```
+```  
+Удалите **все настройки** из файла и добавьте следующий код: 
 ```
 server {
     server_name YOUR_IP & YOUR_DOMAIN;
@@ -170,6 +163,7 @@ server {
         try_files $uri /index.html;
     }
 }
+**Примечание:** Вы можете найти мой пример конфигурации Nginx в папке **infra**.
 ```
 Сохраните изменения в файле, закройте его и проверьте на корректность:
 ```
