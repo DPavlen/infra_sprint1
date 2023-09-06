@@ -86,16 +86,11 @@ sudo cp -r путь_к_директории_с_фронтенд-приложен
 ```
 pip install gunicorn==20.1.0
 ```
-2. Создайте юнит Gunicorn:
-
+2. Откройте юнит для Gunicorn:
 ```
 sudo nano /etc/systemd/system/gunicorn_kittygram.service
 ```
-3. Создайте юнит для Gunicorn:
-```
-sudo nano /etc/systemd/system/gunicorn_kittygram.service
-```
-4. В файле **gunicorn-kittygram.service** опишите конфигурацию процесса:
+3. В файле **gunicorn-kittygram.service** опишите конфигурацию процесса:
 ##### Внимание, вы должны изменить USER_NAME на свое имя пользователя в файле!
 ```
 [Unit]
@@ -112,6 +107,12 @@ WantedBy=multi-user.target
 ```
 **Примечание.** Порт 8000 на моем сервере был занят, поэтому в моей конфигурации используется порт 8080.
 Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
+Для этого скопируйте ваш конфигурационный файл. Затем отредактируйте скопированный файл.
+Воспользуйтесь командой:   
+```
+sudo cp /path/to/your/config/file /etc/systemd/system/gunicorn_kittygram.service
+```
+**Примечание.** /path/to/your/config/file Это путь вашего файла, где будут лежать настройки gunicorn.
 
 Запустите процесс gunicorn_kittygram.service:
 ```
@@ -134,10 +135,13 @@ sudo apt install nginx -y
 ```
 sudo systemctl start nginx
 ```
-3. Настройте конфигурацию для обработки статики фронтенда:   
+3. Настройте конфигурацию для обработки статики фронтенда.
+Для этого скопируйте ваш конфигурационный файл. Затем отредактируйте скопированный файл.
+Воспользуйтесь командой:   
 ```
-sudo nano /etc/nginx/sites-enabled/default
-```  
+sudo cp /path/to/your/config/file /etc/nginx/sites-enabled/default
+```
+**Примечание.** /path/to/your/config/file Это путь вашего файла, где будут лежать настройки ngnix.
 Удалите **все настройки** из файла и добавьте следующий код: 
 ```
 server {
