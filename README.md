@@ -86,10 +86,14 @@ sudo cp -r путь_к_директории_с_фронтенд-приложен
 ```
 pip install gunicorn==20.1.0
 ```
-2. Откройте юнит для Gunicorn:
+2. Вы можете найти мой пример конфигурации Gunicorn в папке **infra_sprint1/infra/gunicorn_kittygram.service** 
+Для этого скопируйте в ваш конфигурационный файл. Затем отредактируйте скопированный файл.
+Воспользуйтесь командой:   
 ```
-sudo nano /etc/systemd/system/gunicorn_kittygram.service
+sudo cp infra_sprint1/infra/gunicorn_kittygram.service /etc/systemd/system/gunicorn_kittygram.service
 ```
+**Примечание.** /etc/systemd/system/gunicorn_kittygram.service Это путь вашего файла, где будут лежать настройки gunicorn.
+
 3. В файле **gunicorn-kittygram.service** опишите конфигурацию процесса:
 ##### Внимание, вы должны изменить USER_NAME на свое имя пользователя в файле!
 ```
@@ -106,13 +110,7 @@ ExecStart=/home/USER_NAME/infra_sprint1/backend/venv/bin/gunicorn --bind 0.0.0.0
 WantedBy=multi-user.target
 ```
 **Примечание.** Порт 8000 на моем сервере был занят, поэтому в моей конфигурации используется порт 8080.
-Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
-Для этого скопируйте ваш конфигурационный файл. Затем отредактируйте скопированный файл.
-Воспользуйтесь командой:   
-```
-sudo cp /path/to/your/config/file /etc/systemd/system/gunicorn_kittygram.service
-```
-**Примечание.** /path/to/your/config/file Это путь вашего файла, где будут лежать настройки gunicorn.
+Вы можете найти мой пример конфигурации Gunicorn в папке **infra_sprint1/infra/gunicorn_kittygram.service** 
 
 Запустите процесс gunicorn_kittygram.service:
 ```
@@ -136,13 +134,13 @@ sudo apt install nginx -y
 sudo systemctl start nginx
 ```
 3. Настройте конфигурацию для обработки статики фронтенда.
-Для этого скопируйте ваш конфигурационный файл. Затем отредактируйте скопированный файл.
+Для этого скопируйте в ваш конфигурационный файл. Затем отредактируйте скопированный файл.
 Воспользуйтесь командой:   
 ```
-sudo cp /path/to/your/config/file /etc/nginx/sites-enabled/default
+sudo cp infra_sprint1/infra/default /etc/nginx/sites-enabled/default
 ```
-**Примечание.** /path/to/your/config/file Это путь вашего файла, где будут лежать настройки ngnix.
-Удалите **все настройки** из файла и добавьте следующий код: 
+**Примечание.** /etc/nginx/sites-enabled/default Это путь вашего файла, где будут лежать настройки ngnix.
+Отредактируйте **все настройки** из файла и добавьте следующий код: 
 ```
 server {
     server_name YOUR_IP & YOUR_DOMAIN;
@@ -168,7 +166,7 @@ server {
     }
 }
 ```
-**Примечание:** Вы можете найти мой пример конфигурации Nginx в папке **infra**.
+**Примечание:** Вы можете найти мой пример конфигурации Nginx в папке **infra_sprint1/infra/default**.
 Сохраните изменения в файле, закройте его и проверьте на корректность:
 ```
 sudo nano /etc/nginx/sites-enabled/default
