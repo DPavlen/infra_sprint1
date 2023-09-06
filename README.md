@@ -95,8 +95,12 @@ gunicorn --bind 0.0.0.0:8080 backend.wsgi
 ```
 sudo nano /etc/systemd/system/gunicorn_kittygram.service
 ```
-4. Подставьте в код из листинга свои данные, добавьте этот код без комментариев в файл
-конфигурации Gunicorn и сохраните изменения:
+4. Необходимо скопировать содержимое файла sudo nano /etc/systemd/system/gunicorn.service
+в файл sudo nano /etc/systemd/system/gunicorn_kittygram.service с помощью команды cp,
+нужно выполнить следующую команду в командной строке:
+```
+sudo cp /etc/systemd/system/gunicorn.service /etc/systemd/system/gunicorn_kittygram.service
+```
 ##### Внимание, вы должны изменить USER_NAME на свое имя пользователя в файле!
 
 **Примечание.** Вы можете найти мой пример конфигурации Gunicorn в папке **infra** 
@@ -137,7 +141,8 @@ sudo apt install nginx -y
 ```
 sudo systemctl start nginx
 ```
-3.Очистите содержимое файла конфигурации Ngnix и добавьте новые настройки:
+3.В существующем файле "default" конфигурации Ngnix добавьте новые настройки
+для приложения kittygram:
 ```
 sudo nano /etc/nginx/sites-enabled/default
 ```
